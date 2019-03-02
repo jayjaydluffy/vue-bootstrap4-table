@@ -244,7 +244,8 @@
                     server_mode: false,
                     card_mode: false,
                     selected_rows_info: true,
-                    inline_table_title: true
+                    inline_table_title: true,
+                    display_sort_icon: false
                 },
                 classes: {
                     tableWrapper: "",

@@ -1,22 +1,28 @@
 <template>
-<span class="ml-2">
-    <template v-if="order == 'asc'">
-        <slot name="vbt-sort-asc-icon">
+<span>
+    <span class="ml-2" v-if="order == 'asc'">
+        <template>
+            <slot name="vbt-sort-asc-icon">
 
-        </slot>
-    </template>
+            </slot>
+        </template>
+    </span>   
 
-    <template v-else-if="order==='desc'">
-        <slot name="vbt-sort-desc-icon">
+    <span class="ml-2" v-else-if="order==='desc'">
+        <template>
+            <slot name="vbt-sort-desc-icon">
 
-        </slot>
-    </template>
+            </slot>
+        </template>
+    </span>
 
-    <template v-else>
-        <slot name="vbt-no-sort-icon">
+    <span class="ml-2" v-else-if="order !== 'asc' && order !== 'desc' && displaySortableIcon">
+        <template>
+            <slot name="vbt-no-sort-icon">
 
-        </slot>
-    </template>
+            </slot>
+        </template>
+    </span>
 </span>
 </template>
 
@@ -39,7 +45,10 @@ export default {
                 return {};
             }
         },
-
+        displaySortableIcon: {
+            type: Boolean,
+            default: true
+        }
     },
     data: function () {
         return {

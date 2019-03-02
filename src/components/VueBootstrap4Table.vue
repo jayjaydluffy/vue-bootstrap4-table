@@ -78,7 +78,7 @@
                                     </slot>
 
                                     <template v-if='isSortableColumn(column)'>
-                                        <SortIcon :sort="query.sort" :column="column">
+                                        <SortIcon :sort="query.sort" :column="column" :displaySortableIcon="display_sort_icon">
                                                 <template slot="vbt-sort-asc-icon">
                                                     <slot name="sort-asc-icon">
                                                             &#x1F825;
@@ -387,7 +387,8 @@ export default {
             lastSelectedItemIndex: null,
             isFirstTime: true,
             isResponsive: true,
-            inline_table_title: false
+            inline_table_title: false,
+            display_sort_icon: true
         };
     },
     mounted() {
@@ -476,6 +477,8 @@ export default {
             this.card_mode = (has(this.config, 'card_mode')) ? (this.config.card_mode) : true;
 
             this.selected_rows_info = (has(this.config, 'card_mode')) ? (this.config.selected_rows_info) : false;
+
+            this.display_sort_icon = (has(this.config, 'display_sort_icon')) ? (this.config.display_sort_icon) : true
 
         },
 

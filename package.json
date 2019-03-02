@@ -1,6 +1,6 @@
 {
     "name": "@jayjaydluffy/vue-bootstrap4-table",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "main": "dist/vue-bootstrap4-table.umd.js",
     "module": "dist/vue-bootstrap4-table.esm.js",
     "unpkg": "dist/vue-bootstrap4-table.min.js",
