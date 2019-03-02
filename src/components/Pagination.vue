@@ -57,8 +57,9 @@
                 </div>
                 <!-- Number of rows per page ends here -->
 
-                <div class="input-group col-sm-2">
-                    <input type="number" class="form-control" min="1" step="1" :max="totalPages" placeholder="Go to page" @keyup.enter="gotoPage" v-model.number="go_to_page">
+                <div class="form-inline mx-3">
+                    <label for="go-to-page" class="mr-2">Go to page</label>
+                    <input type="number" id="go-to-page" class="form-control" min="1" step="1" :max="totalPages" placeholder="Page" @keyup.enter="gotoPage" v-model.number="go_to_page">
                 </div>
             </ul>
         </nav>

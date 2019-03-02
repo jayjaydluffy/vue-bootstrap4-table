@@ -9,13 +9,18 @@
                 <table class="table" :class="tableClasses">
                     <thead>
                         <tr v-if="showToolsRow">
-                            <th :colspan="headerColSpan">
+                            <th :colspan="headerColSpan" class="p-0">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col">
                                         <div class=row>
                                             <!-- global search text starts here -->
-                                            <div class="col-md-6 input-group vbt-global-search" v-if="global_search.visibility">
-                                                  <div class="form-group has-clear-right">
+                                            <div class="col" v-if="inline_table_title">
+                                                <slot name="table-title-and-subtitle">
+                                                    <h4>Add inline table title using slot</h4>
+                                                </slot>
+                                            </div>
+                                            <div class="col input-group vbt-global-search" v-if="global_search.visibility">
+                                                  <div class="form-group has-clear-right" :class="{ 'ml-auto': global_search.right_aligned }">
                                                     <span v-if="global_search.showClearButton" class="form-control-feedback vbt-global-search-clear" @click="clearGlobalSearch">
                                                         <slot name="global-search-clear-icon">
                                                             &#x24E7;
@@ -27,7 +32,7 @@
                                             <!-- global search text ends here -->
 
                                             <!-- refresh & reset button starts here -->
-                                            <div class="col-md-6">
+                                            <div class="col" v-if="show_refresh_button || show_reset_button">
                                                 <div class="btn-group" role="group" aria-label="Table Actions buttons">
                                                     <button v-if="show_refresh_button" type="button" class="btn btn-secondary vbt-refresh-button" @click="$emit('refresh-data')">
                                                         <slot name="refresh-button-text">
@@ -46,7 +51,7 @@
                                     </div>
 
                                     <!-- action buttons starts here -->
-                                    <div class="col-md-8">
+                                    <div class="col" v-if="actions !== undefined && actions.length !== 0">
                                         <div class="btn-group float-right" role="group" aria-label="Basic example">
                                             <button v-for="(action, key, index) in actions" :key="index" type="button" class="btn btn-secondary" @click="$emit(action.event_name,action.event_payload)">
                                                 {{action.btn_text}}
@@ -369,7 +374,8 @@ export default {
                 placeholder: "Enter search text",
                 visibility: true,
                 case_sensitive: false,
-                showClearButton: true
+                showClearButton: true,
+                right_aligned: false
             },
             per_page_options : [5,10,15],
             show_refresh_button: true,
@@ -380,7 +386,8 @@ export default {
             selected_rows_info: false,
             lastSelectedItemIndex: null,
             isFirstTime: true,
-            isResponsive: true
+            isResponsive: true,
+            inline_table_title: false
         };
     },
     mounted() {
@@ -449,12 +456,15 @@ export default {
             this.pagination_info = (has(this.config, 'pagination_info')) ? this.config.pagination_info : true;
 
             this.card_title = (has(this.config, 'card_title')) ? this.config.card_title : "";
+            
+            this.inline_table_title = (has(this.config, 'inline_table_title')) ? this.config.inline_table_title : false;
 
             if (has(this.config, 'global_search')) {
                 this.global_search.placeholder = (has(this.config.global_search, 'placeholder')) ? this.config.global_search.placeholder : "Enter search text";
                 this.global_search.visibility = (has(this.config.global_search, 'visibility')) ? this.config.global_search.visibility : true;
                 this.global_search.case_sensitive = (has(this.config.global_search, 'case_sensitive')) ? this.config.global_search.case_sensitive : false;
                 this.global_search.showClearButton = (has(this.config.global_search, 'showClearButton')) ? this.config.global_search.showClearButton : true;
+                this.global_search.right_aligned = (has(this.config.global_search, 'right_aligned')) ? this.config.global_search.right_aligned : false;
             }
 
             this.show_refresh_button = (has(this.config, 'show_refresh_button')) ? (this.config.show_refresh_button) : true;

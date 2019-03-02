@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="container-fluid mb-10">
+    <div id="app" class="container mb-10">
         <vue-bootstrap4-table :classes="classes"
                               :rows="rows"
                               :columns="columns"
@@ -25,7 +25,7 @@
     <i class="fas fa-times-circle"></i>
 </template>
 <template slot="paginataion-previous-button">
-    Previous
+    Prev
 </template>
 <!-- <template slot="paginataion-next-button">
     <i class="fas fa-step-forward"></i>
@@ -57,6 +57,10 @@
 </template>
 <template slot="lastname-filter" slot-scope="props">
     <input type="text" class="form-control" placeholder="Enter lastname" @keyup.stop="updateLastNamefilter($event)">
+</template>
+<template slot="table-title-and-subtitle">
+    <h4>Team Management</h4>
+    <p class="text-secondary">Users added here will have access to this account.</p>
 </template>
         </vue-bootstrap4-table>
 
@@ -218,7 +222,7 @@
                 config: {
                     pagination: true,
                     pagination_info: true,
-                    num_of_visibile_pagination_buttons: 7,
+                    num_of_visibile_pagination_buttons: 1,
                     per_page: 10,
                     page:2,
                     checkbox_rows: true,
@@ -231,14 +235,16 @@
                         placeholder: "Enter custom Search text",
                         visibility: true,
                         case_sensitive: false, // default false
-                        showClearButton: true
+                        showClearButton: true,
+                        right_aligned: true
                     },
                     per_page_options: [5, 10, 20, 30],
-                    show_reset_button: true,
-                    show_refresh_button: true,
+                    show_reset_button: false,
+                    show_refresh_button: false,
                     server_mode: false,
                     card_mode: false,
-                    selected_rows_info: true
+                    selected_rows_info: true,
+                    inline_table_title: true
                 },
                 classes: {
                     tableWrapper: "",
@@ -263,22 +269,22 @@
                     // table : "table-striped table-bordered my-class",
                 },
                 // actions: []
-                actions: [
-                    {
-                    btn_text: "Download",
-                    event_name: "on-download",
-                    event_payload: {
-                        msg: "my custom msg"
-                    }
-                },
-                    {
-                    btn_text: "Download",
-                    event_name: "on-download",
-                    event_payload: {
-                        msg: "my custom msg"
-                    }
-                },
-                ],
+                // actions: [
+                //     {
+                //     btn_text: "Download",
+                //     event_name: "on-download",
+                //     event_payload: {
+                //         msg: "my custom msg"
+                //     }
+                // },
+                //     {
+                //     btn_text: "Download",
+                //     event_name: "on-download",
+                //     event_payload: {
+                //         msg: "my custom msg"
+                //     }
+                // },
+                // ],
                 startDate: '2017-09-05',
                 endDate: '2017-09-15',
                 locale: {

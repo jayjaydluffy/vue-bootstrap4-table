@@ -1,13 +1,13 @@
 {
-    "name": "vue-bootstrap4-table",
-    "version": "1.0.27",
+    "name": "@jayjaydluffy/vue-bootstrap4-table",
+    "version": "0.0.1",
     "main": "dist/vue-bootstrap4-table.umd.js",
     "module": "dist/vue-bootstrap4-table.esm.js",
     "unpkg": "dist/vue-bootstrap4-table.min.js",
-    "description": "Advanced table based on Vue 2 and Bootstrap 4",
-    "author": "Rubanraj Ravichandran <rubanraj54@gmail.com>",
+    "description": "Advanced table based on Vue 2 and Bootstrap 4 - Forked from https://github.com/rubanraj54/vue-bootstrap4-table",
+    "author": "Arjay Jade Labadan <arjayjadelabadan@gmail.com>",
     "scripts": {
-        "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+        "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --host 0.0.0.0 --public localhost",
         "start": "npm run dev",
         "test": "mocha-webpack --webpack-config build/webpack.test.conf.js --require test/setup.js test/**/*.spec.js",
         "test:watch": "mocha-webpack --watch --webpack-config build/webpack.test.conf.js --require test/setup.js test/**/*.spec.js",
@@ -102,7 +102,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/rubanraj54/vue-bootstrap4-table"
+        "url": "https://github.com/jayjaydluffy/vue-bootstrap4-table.git"
     },
     "homepage": "https://rubanraj54.gitbook.io",
     "license": "MIT",
