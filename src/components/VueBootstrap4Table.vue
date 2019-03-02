@@ -9,25 +9,30 @@
                 <table class="table" :class="tableClasses">
                     <thead>
                         <tr v-if="showToolsRow">
-                            <th :colspan="headerColSpan">
+                            <th :colspan="headerColSpan" class="p-0">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col">
                                         <div class=row>
                                             <!-- global search text starts here -->
-                                            <div class="col-md-6 input-group vbt-global-search" v-if="global_search.visibility">
-                                                <input ref="global_search" type="text" class="form-control" :placeholder="global_search.placeholder" @keyup.stop="updateGlobalSearch($event)" value="">
-                                                <div class="input-group-append vbt-global-search-clear" @click="clearGlobalSearch">
-                                                    <span class="input-group-text">
-                                                        <slot name="clear-global-search-icon">
+                                            <div class="col" v-if="inline_table_title">
+                                                <slot name="table-title-and-subtitle">
+                                                    <h4>Add inline table title using slot</h4>
+                                                </slot>
+                                            </div>
+                                            <div class="col input-group vbt-global-search" v-if="global_search.visibility">
+                                                  <div class="form-group has-clear-right" :class="{ 'ml-auto': global_search.right_aligned }">
+                                                    <span v-if="global_search.showClearButton" class="form-control-feedback vbt-global-search-clear" @click="clearGlobalSearch">
+                                                        <slot name="global-search-clear-icon">
                                                             &#x24E7;
                                                         </slot>
                                                     </span>
+                                                    <input ref="global_search" type="text" class="form-control" :placeholder="global_search.placeholder" @keyup.stop="updateGlobalSearch($event)">
                                                 </div>
                                             </div>
                                             <!-- global search text ends here -->
 
                                             <!-- refresh & reset button starts here -->
-                                            <div class="col-md-6">
+                                            <div class="col" v-if="show_refresh_button || show_reset_button">
                                                 <div class="btn-group" role="group" aria-label="Table Actions buttons">
                                                     <button v-if="show_refresh_button" type="button" class="btn btn-secondary vbt-refresh-button" @click="$emit('refresh-data')">
                                                         <slot name="refresh-button-text">
@@ -46,7 +51,7 @@
                                     </div>
 
                                     <!-- action buttons starts here -->
-                                    <div class="col-md-8">
+                                    <div class="col" v-if="actions !== undefined && actions.length !== 0">
                                         <div class="btn-group float-right" role="group" aria-label="Basic example">
                                             <button v-for="(action, key, index) in actions" :key="index" type="button" class="btn btn-secondary" @click="$emit(action.event_name,action.event_payload)">
                                                 {{action.btn_text}}
@@ -101,7 +106,13 @@
                             <td v-show="checkbox_rows"></td>
                             <td v-for="(column, key, index) in vbt_columns" :key="index" align="center">
                                 <template v-if="hasFilter(column)">
-                                    <Simple v-if="column.filter.type == 'simple'" :column="column" @update-filter="updateFilter" @clear-filter="clearFilter"></Simple>
+                                    <Simple v-if="column.filter.type == 'simple'" :column="column" @update-filter="updateFilter" @clear-filter="clearFilter">
+                                        <template slot="vbt-simple-filter-clear-icon">
+                                            <slot name="simple-filter-clear-icon">
+                                                &#x24E7;
+                                            </slot>
+                                        </template>
+                                    </Simple>
                                     <MultiSelect v-if="column.filter.type == 'select'" :options="column.filter.options" :column="column" @update-multi-select-filter="updateMultiSelectFilter" @clear-filter="clearFilter"></MultiSelect>
                                     <template v-if="column.filter.type == 'custom'">
                                         <slot :name="column.filter.slot_name" :column="column">
@@ -362,7 +373,9 @@ export default {
             global_search: {
                 placeholder: "Enter search text",
                 visibility: true,
-                case_sensitive: false
+                case_sensitive: false,
+                showClearButton: true,
+                right_aligned: false
             },
             per_page_options : [5,10,15],
             show_refresh_button: true,
@@ -373,7 +386,8 @@ export default {
             selected_rows_info: false,
             lastSelectedItemIndex: null,
             isFirstTime: true,
-            isResponsive: true
+            isResponsive: true,
+            inline_table_title: false
         };
     },
     mounted() {
@@ -442,11 +456,15 @@ export default {
             this.pagination_info = (has(this.config, 'pagination_info')) ? this.config.pagination_info : true;
 
             this.card_title = (has(this.config, 'card_title')) ? this.config.card_title : "";
+            
+            this.inline_table_title = (has(this.config, 'inline_table_title')) ? this.config.inline_table_title : false;
 
             if (has(this.config, 'global_search')) {
                 this.global_search.placeholder = (has(this.config.global_search, 'placeholder')) ? this.config.global_search.placeholder : "Enter search text";
                 this.global_search.visibility = (has(this.config.global_search, 'visibility')) ? this.config.global_search.visibility : true;
                 this.global_search.case_sensitive = (has(this.config.global_search, 'case_sensitive')) ? this.config.global_search.case_sensitive : false;
+                this.global_search.showClearButton = (has(this.config.global_search, 'showClearButton')) ? this.config.global_search.showClearButton : true;
+                this.global_search.right_aligned = (has(this.config.global_search, 'right_aligned')) ? this.config.global_search.right_aligned : false;
             }
 
             this.show_refresh_button = (has(this.config, 'show_refresh_button')) ? (this.config.show_refresh_button) : true;
@@ -1105,8 +1123,7 @@ export default {
             }
 
             return (typeof this.classes.tableWrapper == "string") ? this.classes.tableWrapper : defaultClasses;
-        },
-
+        }
     },
     watch: {
         "query.filters": {
@@ -1292,9 +1309,163 @@ export default {
         -ms-user-select: none;      /* IE 10+ */
         user-select: none;          /* Likely future */
     }
-    .input-group-append.vbt-global-search-clear {
+    .vbt-global-search-clear {
         cursor: pointer;
     }
+    input[type="search"] {
+    -webkit-appearance: searchfield;
+    }
+
+    input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: searchfield-cancel-button;
+    }
+
+    /* Bootstrap 4 text input with clear icon on the right */
+
+    .has-clear-right {
+        position: relative;
+    }
+
+    .has-clear-right .form-control {
+        padding-right: 2.375rem;
+    }
+
+    .has-clear-right .form-control-feedback {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+        display: block;
+        width: 2.375rem;
+        height: 2.375rem;
+        line-height: 2.375rem;
+        text-align: center;
+        font-weight: normal;
+    }
+
+    .has-clear-right .form-control-feedback:hover {
+        color: red;
+    }
+
+  /* Absolute Center Spinner */
+.loading {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: visible;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Transparent Overlay */
+.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+}
+
+/* :not(:required) hides these rules from IE9 and below */
+.loading:not(:required) {
+  /* hide "loading..." text */
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.loading:not(:required):after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  margin-top: -0.5em;
+  -webkit-animation: spinner 1500ms infinite linear;
+  -moz-animation: spinner 1500ms infinite linear;
+  -ms-animation: spinner 1500ms infinite linear;
+  -o-animation: spinner 1500ms infinite linear;
+  animation: spinner 1500ms infinite linear;
+  border-radius: 0.5em;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+  box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+}
+
+/* Animation */
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 </style>
 
 

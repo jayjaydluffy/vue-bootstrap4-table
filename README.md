@@ -8,7 +8,7 @@
 
 # 1. vue-bootstrap4-table
 
-> Advanced table based on Vue 2 and Bootstrap 4
+> Advanced table based on Vue 2 and Bootstrap 4. Forked from [rubanraj54/vue-bootstrap4-table](https://github.com/rubanraj54/vue-bootstrap4-table) for specific use case in my project.
 
 
 <p align="center">
