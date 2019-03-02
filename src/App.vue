@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="container mb-10">
+    <div id="app" class="container-fluid mb-10">
         <vue-bootstrap4-table :classes="classes"
                               :rows="rows"
                               :columns="columns"
