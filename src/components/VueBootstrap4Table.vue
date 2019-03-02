@@ -9,7 +9,7 @@
                 <table class="table" :class="tableClasses">
                     <thead>
                         <tr v-if="showToolsRow">
-                            <th :colspan="headerColSpan" class="p-0">
+                            <th :colspan="headerColSpan" class="header-row">
                                 <div class="row">
                                     <div class="col">
                                         <div class=row>
@@ -158,7 +158,7 @@
 
                         <!-- Pagination row starts here -->
                         <tr v-if="showPaginationRow" class="footer-pagination-row">
-                            <td :colspan="headerColSpan">
+                            <td :colspan="headerColSpan" class="footer-row">
                                 <div class="row">
                                     <!-- pagination starts here -->
                                     <div class="col-md-8">
